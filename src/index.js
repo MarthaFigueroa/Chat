@@ -10,14 +10,12 @@ const io = require("socket.io")(server, {
   },
 });
 const PORT = process.env.PORT || 3000;
-// const users = {};
-// const users = Object.create({username: "", connected: ""});
 const disconnectedUsers = [];
 const users = [];
 const rooms = [];
 app.use('/', express.static(path.join(__dirname, '/public')));    
-app.use(express.urlencoded({extended: false}));  //Método para aceptar desde los formularios los datos que mande el usr
-app.use(express.json());  //Se puedan enviar/recibir json
+app.use(express.urlencoded({extended: false}));  
+app.use(express.json());
 
 app.set('views', __dirname + '/views');
 app.engine('html', require('ejs').renderFile);
@@ -39,39 +37,21 @@ app.get('/dm', (req, res) =>{
 });
 
 app.get('/users', (req, res) =>{
-  // res.sendFile(path.join(__dirname, '/views/users.html'));
   res.render('users.html');
 });
 
 io.on('connection', socket =>{
   const getListUsers = (data = []) => {
     const list = [];
-    // console.log("users",users);  
-    for (let [id, socket] of data) { 
-      // console.log(socket.username); 
-      // console.log("Users for",users);  
+    for (let [id, socket] of data) {  
       list.push({      
         userID: id,      
         username: socket.username,   
         connected: true 
       });  
     }
-    // console.log("Users out for",users);  
     return list  
   }
-
-  socket.on('users', (user)=>{
-    console.log(user.username);
-    // socket.broadcast.emit('user connected', {
-    //   userID: connect.id,
-    //   username: user.username
-    // });
-
-    socket.username = user.username;
-
-    let list = getListUsers(io.of("/").sockets);
-    console.log(list);
-  })
 
   socket.on('join', user => {
     if(user in users){
@@ -91,9 +71,8 @@ io.on('connection', socket =>{
       //     let payload = {connectedUsers: users, disconnectedUsers: disconnectedUsers};
       //     io.sockets.emit('usernames', payload );
       //   }else{
-          console.log('New User Connected', user.username, user.message);
+          console.log('New User Connected', user.username, user.message, " with ID:",socket.id);
           socket.username = user.username;
-          console.log("id", socket.id);
           users.push({      
             userID: socket.id,      
             username: socket.username,   
@@ -107,8 +86,6 @@ io.on('connection', socket =>{
           socket.emit("newUser", { userID: socket.id, username: socket.username,connected: true });
           let payload = {connectedUsers: users, disconnectedUsers: disconnectedUsers};
           io.sockets.emit('usernames', payload );
-      //   }
-      // })
     }
     socket.broadcast.emit('sendStatusToAll', user);
     const destination = '/chat';
@@ -128,9 +105,8 @@ io.on('connection', socket =>{
     users.map(user => {
       if(user.username === username){
         console.log("id", user.userID);
-        // io.to(username).emit('sendDm', msg);
         socket.to(user.userID).emit('sendDm', msg);
-        // users[username].emit('sendDm', msg); //socket.to()  {msg: msg.message, nick: socket.nickname}
+        // users[username].emit('sendDm', msg); 
         console.log(msg);
         console.log("Direct Message");
       }
@@ -159,7 +135,6 @@ io.on('connection', socket =>{
 
   socket.on('end', msg =>{
     console.log('User disconnected!');
-    console.log(msg);
     socket.broadcast.emit('state', {users: users, disconnectedUsers: disconnectedUsers, username: msg.username, state: false});
     socket.broadcast.emit('sendLogoutToAll', msg);
     socket.username = msg.username;
@@ -172,14 +147,14 @@ io.on('connection', socket =>{
           connected: true 
         }); 
 
-        console.log("Salió", user.userID);
+        console.log(user.userID,"logged out");
         users.splice(users.findIndex(user => user.username === msg.username), 1); 
       }
     })
     updateUsers();
     socket.disconnect(0);
 
-    console.log(msg.username,"online:",false, Object.keys(users).length );
+    console.log(msg.username,"online:",false);
   });
 
   socket.on('updateState', data =>{
@@ -198,9 +173,8 @@ io.on('connection', socket =>{
               connected: true 
             }); 
   
-            console.log("Salió", user.userID);
+            console.log(user.userID,"logged out");
             users.splice(users.findIndex(user => user.username === msg.username), 1); 
-
           }
         })
       }
@@ -210,15 +184,8 @@ io.on('connection', socket =>{
 
   socket.on('getUsers', () =>{
     const data = {connectedUsers: users, disconnectedUsers: disconnectedUsers};
-    // if(data.connectedUsers.length > 0 || data.disconnectedUsers.length > 0){
-      if(Object.keys(data.connectedUsers).length > 0 || data.disconnectedUsers.length > 0){
-        // if(option == 1){
-        //   socket.emit('usernames', data );
-        // }else if(option == 2){
-        //   socket.emit('listUsernames', data );
-        // }else if(option == null){
-          updateUsers();
-        // }
+    if(Object.keys(data.connectedUsers).length > 0 || data.disconnectedUsers.length > 0){
+      updateUsers();
     }else{
       const destination = '/';
       socket.emit('redirect', destination);

@@ -12,7 +12,6 @@ window.onload = function(){
 }
 
 socket.on('listUsernames', data =>{
-    console.log("7857",data);
     let innerUsers="";
     let listUsers="";
     // for(i=0; i < data.connectedUsers.length; i++){
@@ -59,7 +58,6 @@ socket.on('listUsernames', data =>{
 })
 
 function redirect(username){
-    console.log(username.id);
     window.location.href = `/dm?username=${username.id}`;
 }
 

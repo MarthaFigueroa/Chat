@@ -7,7 +7,6 @@ const socket = io();
     const chat = document.getElementsByClassName('chat-content');
     const showedMessage = document.querySelector('.message');
     const queryString = window.location.search;
-    console.log(queryString);
     const urlParams = new URLSearchParams(queryString);
     const username = urlParams.get('username')
     
@@ -15,12 +14,10 @@ const socket = io();
     let usernameSession = JSON.parse(newUser).username;
     let loggedUser = JSON.parse(newUser);
 
-    console.log("ekis", newUser);
     if(newUser != "" && newUser != null){
         document.title = usernameSession;
         document.getElementById('name').innerHTML = `${usernameSession} <i class="fas fa-circle state"></i>`;
         document.querySelector('.state').style.color = 'greenyellow';
-        console.log(username);
         document.getElementById('nameChat').innerHTML = username;
         socket.emit('getUsers');
     }else{
@@ -46,7 +43,6 @@ const socket = io();
             username: username
         }
 
-        console.log("gg",msg);
         displayMessage('you-message', msg);
         socket.emit('sendDirectMessage', msg);
     }
@@ -86,8 +82,6 @@ const socket = io();
     });
 
     socket.on('listUsernames', data =>{
-        console.log("7857",data);
-        console.log(usernameSession);
         let listUsers="";
         data.connectedUsers.map((connectedUser) =>{
             listUsers += `<li><a onclick="createRoom('${connectedUser.username}', '${usernameSession}')">${connectedUser.username}</a></li>`;

@@ -22,7 +22,6 @@ const socket = io();
         newUser = sessionStorage.getItem('username');
         loggedUser = JSON.parse(newUser);
         usernameSession = JSON.parse(newUser).username;
-        console.log("ekis", usernameSession);
         if(newUser != "" && newUser != null){
             document.title = usernameSession;
             document.getElementById('name').innerHTML = `${usernameSession} <i class="fas fa-circle state"></i>`;
@@ -48,7 +47,6 @@ const socket = io();
             message: message
         }
 
-        console.log("gg",msg);
         displayMessage('you-message', msg);
         socket.emit('sendMessage', msg);
     }
@@ -59,14 +57,12 @@ const socket = io();
             message: message
         }
 
-        console.log("gg",msg);
         display(msg);
         socket.emit('getUsers');
         socket.emit('updateState', {username: msg.username, state: true});
     }
 
     const createRoom = (to, from) =>{
-        console.log(to.id);
         let room = to.id+"-"+from;
         socket.emit('create', {room: room, userID: loggedUser.userID, withUser: to.id});
         console.log("Created Room:", {room: room, userID: loggedUser.userID, withUser: to});
@@ -83,7 +79,6 @@ const socket = io();
             message: message
         }
 
-        console.log("logout",msg);
         display(msg);
         message.disabled = true;
         buttonSend.disabled = true;
@@ -98,47 +93,35 @@ const socket = io();
     });
 
     socket.on('sendToAll', msg=>{
-        console.log("Jaja", msg);
         displayMessage('other-message', msg);
     });
 
     socket.on('sendStatusToAll', msg=>{
-        console.log("Jaja", msg);
         display(msg);
     });
 
     socket.on('sendLogoutToAll', msg=>{
-        console.log("Jaja", msg);
         document.getElementById(msg.username).style.color = 'red' ;
         socket.emit('updateState', {username: msg.username, state: false});
         display(msg);
     });
 
     socket.on('state', state =>{
-        console.log("ssss",state);
         state.users.map(user =>{
-
-            console.log("kednc", document.getElementById(user.username));
             document.getElementById(user.username).style.color = 'greenyellow' ;
         })
 
         state.disconnectedUsers.map(disconnectedUser => {
-            console.log("dcx", document.getElementById(disconnectedUser.username));
             document.getElementById(disconnectedUser.username).style.color = 'red' ;
         })
     });
 
     socket.on('listUsernames', data =>{
-        console.log("7857",data);
         let listUsers="";
-        // for(i=0; i < data.connectedUsers.length; i++){
         data.connectedUsers.map((connectedUser, i) =>{
             listUsers += `<li><a onclick="createRoom(${connectedUser.username}, '${usernameSession}')">${connectedUser.username}</a></li>`;
-            // <div class="users-div">
-            //     <li class=""><a>${connectedUser.username}<i class="fas fa-circle state active" id="${connectedUser.username}"></i></a></li>
-            // </div>
+
         })
-        // for(i=0; i < data.disconnectedUsers.length; i++){
         data.disconnectedUsers.map((disconnectedUser, i) =>{
             listUsers += `<li><a onclick="createRoom(${disconnectedUser.username}, '${usernameSession}')">${disconnectedUser.username}</a></li>`;
         })
@@ -159,7 +142,6 @@ const socket = io();
 
     socket.on('usernames', data =>{
         let innerUsers = '<b>Participants:</b> ';
-        console.log("777",data);
             data.connectedUsers.map((connectedUser, i) =>{
                 
                 innerUsers += `<p class="users-list">${connectedUser.username}<i class="fas fa-circle state active" id="${connectedUser.username}"></i></p>     `;
@@ -176,7 +158,6 @@ const socket = io();
                 }
             })
             usersDiv.innerHTML = innerUsers;
-            console.log("Salgoooo");
 
     })
 

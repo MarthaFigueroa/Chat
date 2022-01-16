@@ -18,7 +18,6 @@ function sendlogin(message, username){
         message: message
     }
 
-    console.log("gg",msg);
     socket.emit('join', msg);
 }
 
