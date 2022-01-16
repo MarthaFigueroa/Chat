@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  </head>
+  <body>
+        <div class="sidebar">
+            <a class="active nav-link" href="#" id="name">Home</a>
+            <a class="nav-link" href="/users">List of Users</a>
+            <li>
+                <a class="nav-link" href="#">Direct Messages</a>
+                <ul id="submenu" class="submenu">
+                </ul>
+            </li> 
+            <a class="nav-link" href="/chat">Groups</a>
+            <a class="nav-link" id="button-logout">Logout</a>
+        </div>
+
+        <div class="content">
+            <div class="chat">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="logo">
+                            <i class="fas fa-sms msg-icon"></i>
+                            <h3>iChat</h3>
+                        </div>
+                        <p id="nameChat">Your Name</p>
+                    </div>
+
+                <!-- ------------------------------------------------------------------------------- -->
+                    <!-- <div class="searchDiv">
+                        <input type="search" placeholder="Buscar usuario para comenzar chat" id="usr_search">
+                        <button id="button-search"><i class="fa fa-search"></i></button>
+                    </div> -->
+
+
+                    <div class="chat-section">
+                    <div class="main-wrapper">
+                        <div class="chat-content">
+                        <div class="message">
+                            <div class="message-row">
+                            
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ------------------------------------------------------------------------------- -->
+
+                    <form class="msg-tex">
+                        <input type="text" name="message" id="message" placeholder="Type message here...." autocomplete="off" />
+                        <button id="button-send">
+                        <i class="fas fa-paper-plane"> Send</i>
+                        </button>
+                        <!-- <button id="button-logout">
+                        Logout
+                        </button> -->
+                    </form>
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    </body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/dm.js"></script>
+</html>
