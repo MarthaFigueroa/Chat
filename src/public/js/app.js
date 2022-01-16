@@ -65,7 +65,7 @@ const socket = io();
     const createRoom = (to, from) =>{
         let room = to.id+"-"+from;
         socket.emit('create', {room: room, userID: loggedUser.userID, withUser: to.id});
-        console.log("Created Room:", {room: room, userID: loggedUser.userID, withUser: to});
+        console.log("Created Room:", {room: room, userID: loggedUser.userID, withUser: to.id});
         window.location.href = `/dm?username=${to.id}`;
     }
 
